@@ -33,7 +33,7 @@
 
         <!-- Username row -->
         <TextBlock Grid.Row="2" Grid.Column="1" Margin="0 0 5 10">Username:</TextBlock>
-        <TextBox x:Name="UserName" Grid.Row="2" Grid.Column="2" MinWidth="350" Margin="0 0 0 10" Text="israelmhuss@gmail.com"/>
+        <TextBox x:Name="UserName" Grid.Row="2" Grid.Column="2" MinWidth="350" Margin="0 0 0 10"/>
 
         <!-- Password row -->
         <TextBlock Grid.Row="3" Grid.Column="1" Margin="0 0 5 20">Password:</TextBlock>

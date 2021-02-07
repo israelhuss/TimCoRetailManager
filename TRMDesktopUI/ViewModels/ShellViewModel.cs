@@ -1,5 +1,4 @@
 ﻿using Caliburn.Micro;
-using System;
 using TRMDesktopUI.EventModels;
 
 namespace TRMDesktopUI.ViewModels
@@ -8,17 +7,15 @@ namespace TRMDesktopUI.ViewModels
 	{
 		private IEventAggregator _events;
 		private SalesViewModel _salesVM;
-		private SimpleContainer _container;
 
-		public ShellViewModel(IEventAggregator events, SalesViewModel salesVM, SimpleContainer container)
+		public ShellViewModel(IEventAggregator events, SalesViewModel salesVM)
 		{
 			_events = events;
 			_salesVM = salesVM;
-			_container = container;
 
 			_events.Subscribe(this);
 
-			ActivateItem(_container.GetInstance<LoginViewModel>());
+			ActivateItem(IoC.Get<LoginViewModel>());
 		}
 
 		public void Handle(LogOnEvent message)

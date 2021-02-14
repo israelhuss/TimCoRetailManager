@@ -13,10 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRMDataManager.Library", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRMDesktopUI.Library", "TRMDesktopUI.Library\TRMDesktopUI.Library.csproj", "{4BF57879-BBDF-43D0-902D-03E7E951EAF2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{41369242-9323-4CAF-A823-794D3EB3F63D}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{DD9A5DEC-6345-4666-9EFA-9B5AF85F5308}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{EB41F43D-9C27-4098-ABA5-C97E95139984}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{19EC8854-EBC1-48DA-A392-F843BCD6378F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +50,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{07B9FB8E-53BF-40AE-89BC-B417865F3429} = {EB41F43D-9C27-4098-ABA5-C97E95139984}
+		{CF98BC6C-3FF2-4291-94FC-481415A8FD9E} = {DD9A5DEC-6345-4666-9EFA-9B5AF85F5308}
+		{F472BFA3-FA28-42D0-AF78-AB4835C49705} = {19EC8854-EBC1-48DA-A392-F843BCD6378F}
+		{E8D9A15B-8DAE-436C-A185-04A319EA86D7} = {EB41F43D-9C27-4098-ABA5-C97E95139984}
+		{4BF57879-BBDF-43D0-902D-03E7E951EAF2} = {19EC8854-EBC1-48DA-A392-F843BCD6378F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {114461EA-399B-46CE-BE62-4D26F5831967}

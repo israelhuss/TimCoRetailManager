@@ -17,10 +17,10 @@ namespace TRMDesktopUI.ViewModels
 		private readonly IUserEndpoint _userEndpoint;
 		private BindingList<UserModel> _users;
 		private UserModel _selectedUser;
-		private BindingList<string> _selectedUserRoles = new BindingList<string>();
+		private BindingList<string> _userRoles = new BindingList<string>();
 		private BindingList<string> _availableRoles = new BindingList<string>();
-		private string _selectedRoleToRemove;
-		private string _selectedRoleToAdd;
+		private string _selectedUserRole;
+		private string _selectedAvailableRole;
 
 
 		public BindingList<UserModel> Users
@@ -39,39 +39,39 @@ namespace TRMDesktopUI.ViewModels
 			set
 			{
 				_selectedUser = value;
-				SelectedUserRoles = new BindingList<string>(value.Roles.Select(x => x.Value).ToList());
+				UserRoles = new BindingList<string>(value.Roles.Select(x => x.Value).ToList());
 				LoadRoles();
 				NotifyOfPropertyChange(() => SelectedUser);
 			}
 		}
 
-		public string SelectedRoleToRemove
+		public string SelectedUserRole
 		{
-			get { return _selectedRoleToRemove; }
+			get { return _selectedUserRole; }
 			set
 			{
-				_selectedRoleToRemove = value;
-				NotifyOfPropertyChange(() => SelectedRoleToRemove);
+				_selectedUserRole = value;
+				NotifyOfPropertyChange(() => SelectedUserRole);
 			}
 		}
 
-		public string SelectedRoleToAdd
+		public string SelectedAvailableRole
 		{
-			get { return _selectedRoleToAdd; }
+			get { return _selectedAvailableRole; }
 			set
 			{
-				_selectedRoleToAdd = value;
-				NotifyOfPropertyChange(() => SelectedRoleToAdd);
+				_selectedAvailableRole = value;
+				NotifyOfPropertyChange(() => _selectedAvailableRole);
 			}
 		}
 
-		public BindingList<string> SelectedUserRoles
+		public BindingList<string> UserRoles
 		{
-			get { return _selectedUserRoles; }
+			get { return _userRoles; }
 			set
 			{
-				_selectedUserRoles = value;
-				NotifyOfPropertyChange(() => SelectedUserRoles);
+				_userRoles = value;
+				NotifyOfPropertyChange(() => UserRoles);
 			}
 		}
 
@@ -134,21 +134,27 @@ namespace TRMDesktopUI.ViewModels
 
 			foreach (var role in roles)
 			{
-				if (SelectedUserRoles.IndexOf(role.Value) < 0)
+				if (UserRoles.IndexOf(role.Value) < 0)
 				{
 					AvailableRoles.Add(role.Value);
 				}
 			}
 		}
 
-		public async Task AddSelectedRole()
+		public async void AddSelectedRole()
 		{
-			//58:27
+			await _userEndpoint.AddUserToRole(SelectedUser.Id, SelectedAvailableRole);
+
+			UserRoles.Add(SelectedAvailableRole);
+			AvailableRoles.Remove(SelectedAvailableRole);
 		}
 
-		public async Task RemoveSelectedRole()
+		public async void RemoveSelectedRole()
 		{
+			await _userEndpoint.RemoveUserFromRole(SelectedUser.Id, SelectedUserRole);
 
+			AvailableRoles.Add(SelectedUserRole);
+			UserRoles.Remove(SelectedUserRole);
 		}
 	}
 }

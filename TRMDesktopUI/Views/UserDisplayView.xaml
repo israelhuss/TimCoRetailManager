@@ -44,14 +44,13 @@
             <TextBlock Margin="0 0 0 10" Text="{Binding SelectedUser.Email}"/>
             <TextBlock Text="Current Roles"/>
             <StackPanel Orientation="Horizontal"  Margin="0 0 0 10">
-                <ListBox x:Name="SelectedUserRoles" SelectedItem="SelectedRoleToRemove" />
+                <ListBox x:Name="UserRoles" />
                 <Button x:Name="RemoveSelectedRole" Content="Remove" Margin="5 0 0 0" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <ComboBox x:Name="AvailableRoles" SelectedItem="SelectedRoleToAdd" />
+                <ComboBox x:Name="AvailableRoles" />
                 <Button x:Name="AddSelectedRole" Content="Add Role" Margin="5 0 0 0" />
             </StackPanel>
         </StackPanel>
-        
     </Grid>
 </UserControl>

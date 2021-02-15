@@ -7,7 +7,7 @@ namespace TRMDesktopUI.Library.Api
 {
 	public class SaleEndpoint : ISaleEndpoint
 	{
-		private IAPIHelper _apiHelper;
+		private readonly IAPIHelper _apiHelper;
 
 		public SaleEndpoint(IAPIHelper apiHelper)
 		{

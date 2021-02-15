@@ -11,9 +11,9 @@ namespace TRMDesktopUI.ViewModels
 	{
 		private string _userName = "israelmhuss@gmail.com";
 		private string _password = "Pwd12345.";
-		private IAPIHelper _apiHelper;
+		private readonly IAPIHelper _apiHelper;
 		private string _errorMessage;
-		private IEventAggregator _events;
+		private readonly IEventAggregator _events;
 
 		public bool IsErrorVisible => ErrorMessage?.Length > 0;
 		public bool CanLogIn => UserName?.Length > 0 && Password?.Length > 5;

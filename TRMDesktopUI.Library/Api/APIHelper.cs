@@ -11,7 +11,7 @@ namespace TRMDesktopUI.Library.Api
 	public class APIHelper : IAPIHelper
 	{
 		private HttpClient _apiClient { get; set; }
-		private ILoggedInUserModel _loggedInUser;
+		private readonly ILoggedInUserModel _loggedInUser;
 
 		public APIHelper(ILoggedInUserModel loggedInUser)
 		{

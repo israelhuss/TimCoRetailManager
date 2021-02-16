@@ -13,4 +13,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.12" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TRMDataManager.Library\TRMDataManager.Library.csproj" />
+  </ItemGroup>
+
 </Project>

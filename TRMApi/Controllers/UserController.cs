@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -20,6 +21,12 @@ namespace TRMApi.Controllers
 	{
 		private readonly ApplicationDbContext _context;
 		private readonly UserManager<IdentityUser> _userManager;
+		private readonly IConfiguration _config;
+
+		public UserController(IConfiguration config)
+		{
+			_config = config;
+		}
 
 		public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
 		{
@@ -31,7 +38,7 @@ namespace TRMApi.Controllers
 		public UserModel GetById()
 		{
 			string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-			UserData data = new UserData();
+			UserData data = new UserData(_config);
 
 			return data.GetUserById(userId).First();
 		}

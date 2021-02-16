@@ -174,7 +174,6 @@ namespace TRMDesktopUI.ViewModels
 			NotifyOfPropertyChange(() => CanCheckOut);
 		}
 
-		// TODO - Make sure something is selected...
 		public bool CanAddToCart => ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity;
 		public bool CanRemoveFromCart => SelectedCartItem != null && SelectedCartItem?.QuantityInCart > 0;
 		public bool CanCheckOut => Cart.Count > 0;

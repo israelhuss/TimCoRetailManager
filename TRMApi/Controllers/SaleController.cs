@@ -16,7 +16,7 @@ namespace TRMApi.Controllers
 		public void Post(SaleModel sale)
 		{
 			SaleData data = new SaleData();
-			string userId = User.FindFirstValue(ClaimTypes.NameIdentifier); //RequestContext.Principal.Identity.GetUserId();
+			string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
 			data.SaveSale(sale, userId);
 		}

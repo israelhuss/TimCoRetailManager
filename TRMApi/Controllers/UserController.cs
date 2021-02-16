@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using TRMApi.Data;
 using TRMApi.Models;
 using TRMDataManager.Library.DataAccess;
@@ -17,6 +18,15 @@ namespace TRMApi.Controllers
 	[Authorize]
 	public class UserController : ControllerBase
 	{
+		private readonly ApplicationDbContext _context;
+		private readonly UserManager<IdentityUser> _userManager;
+
+		public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+		{
+			_context = context;
+			_userManager = userManager;
+		}
+
 		[HttpGet]
 		public UserModel GetById()
 		{
@@ -33,30 +43,29 @@ namespace TRMApi.Controllers
 		{
 			List<ApplicationUserModel> output = new List<ApplicationUserModel>();
 
-			using (var context = new ApplicationDbContext())
+			var users = _context.Users.ToList();
+			var userRoles = from ur in _context.UserRoles
+							join r in _context.Roles on ur.RoleId equals r.Id
+							select new { ur.UserId, ur.RoleId, r.Name };
+
+			foreach (var user in users)
 			{
-				var userStore = new UserStore<ApplicationUser>(context);
-				var userManager = new UserManager<ApplicationUser>(userStore);
-
-				var users = userManager.Users.ToList();
-				var roles = context.Roles.ToList();
-
-				foreach (var user in users)
+				ApplicationUserModel u = new ApplicationUserModel
 				{
-					ApplicationUserModel u = new ApplicationUserModel
-					{
-						Id = user.Id,
-						Email = user.Email
-					};
+					Id = user.Id,
+					Email = user.Email
+				};
 
-					foreach (var r in user.Roles)
-					{
-						u.Roles.Add(r.RoleId, roles.Where(x => x.Id == r.RoleId).First().Name);
-					}
+				u.Roles = userRoles.Where(x => x.UserId == u.Id).ToDictionary(x => x.RoleId, x => x.Name);
 
-					output.Add(u);
-				}
+				//foreach (var r in user.Roles)
+				//{
+				//	u.Roles.Add(r.RoleId, roles.Where(x => x.Id == r.RoleId).First().Name);
+				//}
+
+				output.Add(u);
 			}
+			
 
 			return output;
 		}
@@ -66,39 +75,28 @@ namespace TRMApi.Controllers
 		[Route("api/User/Admin/GetAllRoles")]
 		public Dictionary<string, string> GetAllRoles()
 		{
-			using (var context = new ApplicationDbContext())
-			{
-				var roles = context.Roles.ToDictionary(x => x.Id, x => x.Name);
-				return roles;
-			}
+			
+			var roles = _context.Roles.ToDictionary(x => x.Id, x => x.Name);
+			return roles;
 		}
 
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
 		[Route("api/User/Admin/AddRole")]
-		public void AddARole(UserRolePairModel pairing)
+		public async Task AddARole(UserRolePairModel pairing)
 		{
-			using (var context = new ApplicationDbContext())
-			{
-				var userStore = new UserStore<ApplicationUser>(context);
-				var userManager = new UserManager<ApplicationUser>(userStore);
-
-				userManager.AddToRole(pairing.UserId, pairing.RoleName);
-			}
+			var user = await _userManager.FindByIdAsync(pairing.UserId);
+			await _userManager.AddToRoleAsync(user, pairing.RoleName);
+			
 		}
 
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
 		[Route("api/User/Admin/RemoveRole")]
-		public void RemoveARole(UserRolePairModel pairing)
+		public async Task RemoveARole(UserRolePairModel pairing)
 		{
-			using (var context = new ApplicationDbContext())
-			{
-				var userStore = new UserStore<ApplicationUser>(context);
-				var userManager = new UserManager<ApplicationUser>(userStore);
-
-				userManager.RemoveFromRole(pairing.UserId, pairing.RoleName);
-			}
+			var user = await _userManager.FindByIdAsync(pairing.UserId);
+			await _userManager.RemoveFromRoleAsync(user, pairing.RoleName);
 		}
 	}
 }

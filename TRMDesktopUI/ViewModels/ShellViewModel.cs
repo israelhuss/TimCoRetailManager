@@ -1,4 +1,6 @@
 ﻿using Caliburn.Micro;
+using System.Threading;
+using System.Threading.Tasks;
 using TRMDesktopUI.EventModels;
 using TRMDesktopUI.Library.Api;
 using TRMDesktopUI.Library.Models;
@@ -19,34 +21,40 @@ namespace TRMDesktopUI.ViewModels
 			_user = user;
 			_apiHelper = apiHelper;
 
-			_events.Subscribe(this);
+			_events.SubscribeOnPublishedThread(this);
 
-			ActivateItem(IoC.Get<LoginViewModel>());
+			ActivateItemAsync(IoC.Get<LoginViewModel>(), new CancellationToken());
 		}
 
 		public bool IsLoggedIn => string.IsNullOrWhiteSpace(_user.Token) == false;
 
 		public void ExitApplication()
 		{
-			TryClose();
+			TryCloseAsync();
 		}
 
-		public void UserManagement()
+		public async Task UserManagement()
 		{
-			ActivateItem(IoC.Get<UserDisplayViewModel>());
+			await ActivateItemAsync(IoC.Get<UserDisplayViewModel>(), new CancellationToken());
 		}
 
-		public void LogOut()
+		public async Task LogOut()
 		{
 			_user.ResetUserModel();
 			_apiHelper.LogOffUser();
-			ActivateItem(IoC.Get<LoginViewModel>());
+			await ActivateItemAsync(IoC.Get<LoginViewModel>(), new CancellationToken());
 			NotifyOfPropertyChange(() => IsLoggedIn);
 		}
 
-		public void Handle(LogOnEvent message)
+		//public void Handle(LogOnEvent message)
+		//{
+		//	ActivateItem(_salesVM);
+		//	NotifyOfPropertyChange(() => IsLoggedIn);
+		//}
+
+		public async Task HandleAsync(LogOnEvent message, CancellationToken cancellationToken)
 		{
-			ActivateItem(_salesVM);
+			await ActivateItemAsync(_salesVM, cancellationToken);
 			NotifyOfPropertyChange(() => IsLoggedIn);
 		}
 	}

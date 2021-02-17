@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using TRMDesktopUI.EventModels;
 using TRMDesktopUI.Library.Api;
@@ -67,7 +68,7 @@ namespace TRMDesktopUI.ViewModels
 				//Capture information about the logged in user
 				await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
 
-				_events.PublishOnUIThread(new LogOnEvent());
+				await _events.PublishOnUIThreadAsync(new LogOnEvent(), new CancellationToken());
 			}
 			catch (Exception ex)
 			{

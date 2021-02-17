@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using TRMApi.Data;
 
@@ -27,7 +29,7 @@ namespace TRMApi.Controllers
 		{
 			if (await IsValidUsernameAndPassword(username, password))
 			{
-
+				return new ObjectResult(await GenerateToken(username));
 			}
 			else
 			{
@@ -56,6 +58,26 @@ namespace TRMApi.Controllers
 				new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
 				new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds().ToString())
 			};
+
+			foreach (var role in roles)
+			{
+				claims.Add(new Claim(ClaimTypes.Role, role.Name));
+			}
+
+			var token = new JwtSecurityToken(
+				new JwtHeader(
+					new SigningCredentials(
+						new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKeyIsSecretSoDoNotTell")),
+						SecurityAlgorithms.HmacSha256)),
+				new JwtPayload(claims));
+
+			var output = new
+			{
+				Access_Token = new JwtSecurityTokenHandler().WriteToken(token),
+				UserName = username
+			};
+
+			return output;
 		}
 	}
 }

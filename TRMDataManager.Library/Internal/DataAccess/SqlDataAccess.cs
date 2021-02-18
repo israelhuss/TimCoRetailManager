@@ -2,14 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 
 namespace TRMDataManager.Library.Internal.DataAccess
 {
-	internal class SqlDataAccess : IDisposable
+	public class SqlDataAccess : IDisposable, ISqlDataAccess
 	{
 		private readonly IConfiguration _config;
 

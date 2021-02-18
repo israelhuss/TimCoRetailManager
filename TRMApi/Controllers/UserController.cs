@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -21,24 +19,23 @@ namespace TRMApi.Controllers
 	{
 		private readonly ApplicationDbContext _context;
 		private readonly UserManager<IdentityUser> _userManager;
-		private readonly IConfiguration _config;
+		private readonly IUserData _userData;
 
-		
-
-		public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IConfiguration config)
+		public UserController(ApplicationDbContext context,
+			UserManager<IdentityUser> userManager,
+			IUserData userData)
 		{
 			_context = context;
 			_userManager = userManager;
-			_config = config;
+			_userData = userData;
 		}
 
 		[HttpGet]
 		public UserModel GetById()
 		{
 			string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-			UserData data = new UserData(_config);
 
-			return data.GetUserById(userId).First();
+			return _userData.GetUserById(userId).First();
 		}
 
 		[Authorize(Roles = "Admin")]
@@ -63,14 +60,9 @@ namespace TRMApi.Controllers
 
 				u.Roles = userRoles.Where(x => x.UserId == u.Id).ToDictionary(x => x.RoleId, x => x.Name);
 
-				//foreach (var r in user.Roles)
-				//{
-				//	u.Roles.Add(r.RoleId, roles.Where(x => x.Id == r.RoleId).First().Name);
-				//}
-
 				output.Add(u);
 			}
-			
+
 
 			return output;
 		}
@@ -80,7 +72,7 @@ namespace TRMApi.Controllers
 		[Route("Admin/GetAllRoles")]
 		public Dictionary<string, string> GetAllRoles()
 		{
-			
+
 			var roles = _context.Roles.ToDictionary(x => x.Id, x => x.Name);
 			return roles;
 		}
@@ -92,7 +84,7 @@ namespace TRMApi.Controllers
 		{
 			var user = await _userManager.FindByIdAsync(pairing.UserId);
 			await _userManager.AddToRoleAsync(user, pairing.RoleName);
-			
+
 		}
 
 		[Authorize(Roles = "Admin")]
